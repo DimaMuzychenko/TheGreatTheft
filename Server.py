@@ -34,9 +34,9 @@ def handle_msg(msg : Msg, sender : Tuple[str, int], server : socket.socket):
 def main():
     server = create_server()
     while not quit:
-        msg, client = server.recvfrom(1024)
-        msg = pickle.loads(msg)
-        handle_msg(msg, client, server)
+        msg, client = receive_msg_from(server)
+        if msg:
+            handle_msg(msg, client, server)
 
 
 if __name__ == '__main__':

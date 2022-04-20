@@ -1,6 +1,5 @@
 import pygame
 from typing import *
-from Field import Field
 
 
 class Pawn(pygame.sprite.Sprite):
@@ -20,18 +19,10 @@ class Pawn(pygame.sprite.Sprite):
     
     def set_pos(self, pos : Tuple[int, int]):
         self.rect.center = pos
-    
-    
-    def set_cell_idx(self, pos : Tuple[int, int]):
-        self.rect.center = Field.cell_coord(Field.cell_index(pos))
 
     
     def get_pos(self) -> Tuple[int, int]:
         return self.rect.center
-    
-    
-    def get_cell_idx(self) -> Tuple[int, int]:
-        return Field.cell_index(self.rect.center)
     
     
     def set_radius(self, radius : int):

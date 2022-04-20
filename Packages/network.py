@@ -3,9 +3,6 @@ import socket
 import random
 from typing import *
 
-from matplotlib.pyplot import connect
-from config import SERVER_IP, SERVER_PORT, DGRAM_SIZE
-
 
 DGRAM_SIZE = 1024
 SERVER_IP = '25.16.200.3'
@@ -43,6 +40,7 @@ def create_socket() -> socket.socket:
     IP = socket.gethostbyname(socket.gethostname())
     PORT = get_opened_port()
     sock.bind((IP, PORT))
+    sock.setblocking(0)
     return sock
 
 
@@ -58,9 +56,26 @@ def create_server() -> socket.socket:
 
 
 def receive_msg(connection : socket.socket) -> Msg | None:
-    data = connection.recv(DGRAM_SIZE)
-    data = pickle.loads(data)
-    if data is Msg:
+    data = None
+    try:
+        data = connection.recv(DGRAM_SIZE)
+        data = pickle.loads(data)
+    except:
+        pass
+    if type(data) == Msg:
         return data
     return None
-    
+
+
+def receive_msg_from(connection : socket.socket) -> Tuple[Msg, Tuple[str, int]] | None:
+    data = None
+    addr = None
+    try:
+        data, addr = connection.recvfrom(DGRAM_SIZE)
+        data = pickle.loads(data)
+    except:
+        pass
+    if type(data) == Msg:
+        return (data, addr)
+    return (None, None)
+ 

@@ -124,9 +124,8 @@ def update_interface(new_w : int, new_h : int):
 def handle_msg(msg : Msg):
     if msg:
         if msg.type == MSG_MOVE_PAWN:
-            pawn_id, x, y = msg.content
-            pawn = game_field.pawns[pawn_id]
-            pawn.set_cell_idx((x, y))
+            pawn_id, (x, y) = msg.content
+            game_field.set_pawn_cell(pawn_id, (x, y))
             
 
 

@@ -1,8 +1,8 @@
 import pygame
 import pygame_gui
-import Packages.Client.join_menu as join_menu
-from Packages.Client.config import *
-from Packages.Client.ui_config import *
+import Packages.join_menu as join_menu
+from Packages.config import *
+from Packages.ui_config import *
 
 pygame.init()
 

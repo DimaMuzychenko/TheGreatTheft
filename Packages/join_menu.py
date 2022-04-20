@@ -1,7 +1,7 @@
 import pygame, pygame_gui
 import socket
 import pickle
-from network import *
+from .network import *
 from pygame import Surface
 from .config import *
 from .ui_config import *
@@ -19,8 +19,7 @@ def try_connect(address : str, name : str, socket : socket.socket) -> str:
     socket.sendto(pickle.dumps(msg, 5), (host, port))
     respond = None
     while not respond:
-        respond = socket.recv(DGRAM_SIZE)
-    respond = pickle.loads(respond)
+        respond = receive_msg(socket)
     if respond.type == MSG_NEW_PLAYER:
         if respond.content == 'OK':
             return 'OK'
