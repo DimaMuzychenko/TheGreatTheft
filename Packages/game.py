@@ -1,4 +1,5 @@
 import socket
+import threading
 from pygame import Surface
 from typing import *
 import pygame
@@ -128,14 +129,16 @@ def handle_msg(msg : Msg):
             game_field.set_pawn_cell(pawn_id, (x, y))
             
 
-
 def run_game(_window : Surface, _server_connection : socket):
     global window, game_field, server_connection
     window = _window
-    server_connection = _server_connection
+    server_connection = _server_connection    
     init()
     load_images()
     game_field = Field()
+    
+    listener = threading.Thread(target=receive_msgs_into_queue, args=[server_connection])
+    listener.run()
     
     quit = False
     while not quit:
@@ -143,8 +146,10 @@ def run_game(_window : Surface, _server_connection : socket):
             if event.type == pygame.QUIT:
                 quit = True
         
-        handle_msg(receive_msg(server_connection))        
+        handle_msg(get_next_msg()[0])
         handle_mouse() 
         draw()
 
         clock.tick(FPS)
+    listener.join(0)
+    server_connection.close()

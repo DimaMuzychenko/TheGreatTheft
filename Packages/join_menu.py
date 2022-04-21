@@ -16,10 +16,12 @@ def try_connect(address : str, name : str, socket : socket.socket) -> str:
     except ValueError:
         return 'Невірна адреса!'
     msg = Msg(MSG_NEW_PLAYER, name)
+    log('Msg', msg, 'to', (host, port))
     socket.sendto(pickle.dumps(msg, 5), (host, port))
     respond = None
     while not respond:
         respond = receive_msg(socket)
+    log('Got respond', respond)
     if respond.type == MSG_NEW_PLAYER:
         if respond.content == 'OK':
             return 'OK'

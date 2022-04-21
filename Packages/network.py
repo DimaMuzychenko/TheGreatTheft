@@ -1,7 +1,9 @@
 import pickle
 import socket
 import random
+from .logging import log
 from typing import *
+
 
 
 DGRAM_SIZE = 1024
@@ -40,7 +42,7 @@ def create_socket() -> socket.socket:
     IP = socket.gethostbyname(socket.gethostname())
     PORT = get_opened_port()
     sock.bind((IP, PORT))
-    sock.setblocking(0)
+    log("New socket", (IP, PORT), "is created")
     return sock
 
 
@@ -49,9 +51,9 @@ def create_server() -> socket.socket:
         server = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         server.bind((SERVER_IP, SERVER_PORT))
+        log("New server", (SERVER_IP, SERVER_PORT), "is created")
     except socket.error as ex:
-        with open('log.txt', 'w') as log_file:
-            print(ex, file=log_file)
+        log(ex)
     return server
 
 
@@ -73,9 +75,33 @@ def receive_msg_from(connection : socket.socket) -> Tuple[Msg, Tuple[str, int]] 
     try:
         data, addr = connection.recvfrom(DGRAM_SIZE)
         data = pickle.loads(data)
-    except:
+    except BlockingIOError:
         pass
     if type(data) == Msg:
         return (data, addr)
     return (None, None)
  
+msg_queue : List[Tuple[Msg, Tuple[str, int]]]
+ 
+def receive_msgs_into(msg_queue, connection : socket.socket):
+    while True:
+        msg_queue.append(receive_msg_from(connection))
+        
+
+def receive_msgs_into_queue(connection : socket.socket):
+    global msg_queue
+    while True:
+        msg_queue.append(receive_msg_from(connection))
+
+
+def get_next_msg():
+    try:
+        return msg_queue.pop(0)
+    except IndexError:
+        return None
+
+def pick_next_msg():
+    try:
+        return msg_queue[0]
+    except IndexError:
+        return None
