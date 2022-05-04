@@ -138,7 +138,7 @@ def run_game(_window : Surface, _server_connection : socket):
     game_field = Field()
     
     listener = threading.Thread(target=receive_msgs_into_queue, args=[server_connection])
-    listener.run()
+    listener.start()
     
     quit = False
     while not quit:

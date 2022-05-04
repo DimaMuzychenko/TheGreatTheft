@@ -96,7 +96,7 @@ def run(window : Surface):
             
             if event.type == pygame_gui.UI_BUTTON_PRESSED:
                 if event.ui_element == connect_button:
-                    sock = create_socket()
+                    sock = create_client_socket()
                     result = try_connect(address_entry_line.get_text(), name_entry_line.get_text(), sock)
                     if result == 'OK':
                         run_game(window, sock)

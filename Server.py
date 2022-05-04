@@ -12,39 +12,39 @@ players_name : List[str] = []
 pawns : List[Pawn] = []
 quit = False
 
-def handle_msg(msg : Msg, sender : Tuple[str, int], server : socket.socket):
-    log(msg, 'Sender', sender)
+def handle_msg(msg : Msg, server : socket.socket):
+    log(msg)
     if(msg.type == MSG_NEW_PLAYER):
         name = msg.content
         if name not in players_name:
-            clients_addr.append(sender)
+            clients_addr.append(msg.sender)
             players_name.append(name)
-            respond = pickle.dumps(Msg(MSG_NEW_PLAYER, 'OK'))
-            log('Respond', respond, 'to', sender)
-            server.sendto(respond, sender)
+            respond = pickle.dumps(Msg(MSG_NEW_PLAYER, 'OK', (SERVER_IP, SERVER_PORT)))
+            log('Respond', respond)
+            server.sendto(respond, msg.sender)
         else:
-            respond = pickle.dumps(Msg(MSG_NEW_PLAYER, 'FAIL'))
-            log('Respond', respond, 'to', sender)
-            server.sendto(respond, sender)
+            respond = pickle.dumps(Msg(MSG_NEW_PLAYER, 'FAIL', (SERVER_IP, SERVER_PORT)))
+            log('Respond', respond)
+            server.sendto(respond, msg.sender)
     elif(msg.type == MSG_MOVE_PAWN):
         data = pickle.dumps(msg, protocol=5)
         for addr in clients_addr:
-            log('Respond', respond, 'to', sender)
+            log('Respond', respond)
             server.sendto(data, addr)
 
 
 
 def main():
     global quit
-    client_connection = create_server()
+    client_connection = create_server_socket()
     
     listener = threading.Thread(target=receive_msgs_into_queue, args=[client_connection])
-    listener.run()
+    listener.start()
     while not quit:
         try:
-            msg, sender = get_next_msg()
+            msg = get_next_msg()
             if msg:
-                handle_msg(msg, sender, client_connection)
+                handle_msg(msg, client_connection)
         except KeyboardInterrupt:
             log('Keyboard interupt')
             quit = True
