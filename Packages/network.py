@@ -1,8 +1,11 @@
 import pickle
 import socket
 import random
-from .logging import log
+from logging import log
 from typing import *
+
+from matplotlib.pyplot import connect
+#from .config import SERVER_IP, SERVER_PORT, DGRAM_SIZE
 
 
 
@@ -45,6 +48,9 @@ def create_client_socket() -> socket.socket:
     CLIENT_PORT = get_opened_port()
     sock.bind((CLIENT_IP, CLIENT_PORT))    
     log("New socket", (CLIENT_IP, CLIENT_PORT), "is created")
+    IP = socket.gethostbyname(socket.gethostname())
+    PORT = get_opened_port()
+    sock.bind((IP, PORT))
     return sock
 
 
@@ -94,3 +100,8 @@ def pick_next_msg():
         return msg_queue[0]
     except IndexError:
         return None
+    data = connection.recv(DGRAM_SIZE)
+    data = pickle.loads(data)
+    if data is Msg:
+        return data
+    return None

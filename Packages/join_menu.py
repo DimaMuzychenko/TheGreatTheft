@@ -21,12 +21,14 @@ def try_connect(address : str, name : str, socket : socket.socket) -> str:
     respond = None
     while not respond:
         respond = receive_msg(socket)
-    log('Got respond', respond)
-    if respond.type == MSG_NEW_PLAYER:
-        if respond.content == 'OK':
-            return 'OK'
-        else:
-            return "Ім'я зайняте!"
+        log('Got respond', respond)
+        respond = socket.recv(DGRAM_SIZE)
+        respond = pickle.loads(respond)
+        if respond.type == MSG_NEW_PLAYER:
+            if respond.content == 'OK':
+                return 'OK'
+            else:
+                return "Ім'я зайняте!"
     return 'Невідома помилка, спробуйте ще раз!'
 
   

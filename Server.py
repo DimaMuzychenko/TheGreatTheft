@@ -41,6 +41,7 @@ def main():
     listener = threading.Thread(target=receive_msgs_into_queue, args=[client_connection])
     listener.start()
     while not quit:
+<<<<<<< HEAD
         try:
             msg = get_next_msg()
             if msg:
@@ -52,6 +53,12 @@ def main():
             log(ex)
     listener.join(0)
     client_connection.close()
+=======
+        msg, client = server.recvfrom(1024)
+        msg = pickle.loads(msg)
+        handle_msg(msg, client, server)
+
+>>>>>>> parent of d96e0d0 (Small refactoring)
 
 if __name__ == '__main__':
     main()

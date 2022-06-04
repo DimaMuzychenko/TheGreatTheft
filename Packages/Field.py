@@ -8,28 +8,12 @@ from pygame import Surface
 class Field(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        img = pygame.image.load(os.path.join(PATH_TO_RES, "field3.bmp")).convert()
+        img = pygame.image.load(os.path.join(PATH_TO_RES, "field2.bmp")).convert()
         self.image = pygame.transform.smoothscale(img, (HEIGHT, HEIGHT))
         self.rect = self.image.get_rect()
         self.pawns : List[Pawn] = Field.create_pawns()
         self.cells = Field._create_cells()
-        
-        
-    def set_pawn_pos(self, pawn_id : int, coords : Tuple[int, int]):
-        self.pawns[pawn_id].set_pos(coords)
 
-    
-    def get_pawn_pos(self, pawn_id : int) -> Tuple[int, int]:
-        return self.pawns[pawn_id].get_pos()
-    
-    
-    def set_pawn_cell(self, pawn_id : int, indexes : Tuple[int, int]):        
-        self.pawns[pawn_id].set_pos(Field.cell_coord(indexes))
-    
-    
-    def get_pawn_cell(self, pawn_id : int) -> Tuple[int, int]:
-        return Field.cell_index(self.pawns[pawn_id].get_pos())
-    
     
     def cell_index(coords : Tuple[int, int]) -> Tuple[int, int]:
         x = int(coords[0] / CELL_SIZE)
@@ -56,6 +40,22 @@ class Field(pygame.sprite.Sprite):
         pawns.append(Pawn(HEIGHT/60, DARK_BLUE))
         pawns.append(Pawn(HEIGHT/60, YELLOW))
         return pawns
+    
+    
+    def Set_pawn_pos(self, pawn_id : int, coords : Tuple[int, int]) -> None:
+        self.pawns[pawn_id].set_pos(coords)
+        
+        
+    def Set_pawn_cell(self, pawn_id : int, indexes : Tuple[int, int]) -> None:
+        self.pawns[pawn_id].set_pos(self.cell_coord(indexes))
+        
+    
+    def Get_pawn_pos(self, pawn_id : int, coords : Tuple[int, int]) -> Tuple[int, int]:
+        return self.pawns[pawn_id].get_pos()
+        
+        
+    def Get_pawn_cell(self, pawn_id : int, indexes : Tuple[int, int]) -> Tuple[int, int]:
+        return self.cell_index(self.pawns[pawn_id].get_pos())
     
     
     def _create_cells() -> List[List[int]]:

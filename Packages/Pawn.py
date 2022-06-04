@@ -19,11 +19,11 @@ class Pawn(pygame.sprite.Sprite):
     
     def set_pos(self, pos : Tuple[int, int]):
         self.rect.center = pos
-
+    
     
     def get_pos(self) -> Tuple[int, int]:
         return self.rect.center
-    
+        
     
     def set_radius(self, radius : int):
         sur = pygame.Surface((radius*2, radius*2))
